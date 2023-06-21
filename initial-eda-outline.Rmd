@@ -1,0 +1,41 @@
+---
+title: "Initial EDA Basic Outline"
+author: "Names of all group members"
+output: html_notebook
+---
+
+This is an outline for your Initial EDA. You can follow this outline, or you can modify it as you see fit. Do what works best for your project. 
+
+## Research Question 
+
+State your specific research question and why it is interesting. 
+
+
+
+## Data Processing 
+
+#### Data Intake 
+
+Include R code and written explanation to import your **TWO** data sets.
+
+#### Data Wrangling 
+
+Include R code and written explanation for wangling your data (you can make multiple wrangled data sets). 
+
+
+
+
+## Data Visualization
+
+#### Plot 1
+
+Include R code to make one data visualization (I would encourage you to use 3 or more variables). Include a brief written description of what your graph shows. Is this graph helpful in answering your research question? If it is helpful, will you need to add/modify anything in this graph in the final report? 
+
+#### Plot 2
+
+Include R code to make one data visualization (I would encourage you to use 3 or more variables). Include a brief written description of what your graph shows. Is this graph helpful in answering your research question? If it is helpful, will you need to add/modify anything in this graph in the final report? 
+
+
+## Conclusion
+
+Include your initial intuition as to what the answer to your research question is using the data sets and visualizations you created. 
