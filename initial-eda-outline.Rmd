@@ -105,11 +105,21 @@ AlcoholSex <-
   summarise(meanAlcWeekday = mean(Dalc),
             meanAlcWeekend = mean(Walc))
 AlcoholSex
+
+# Alcohol consumption and life expectancy with deaths
+AlcoholLife <- DataTableLife %>%
+  group_by(Alcohol) %>%
+  filter(Status == "Developed") %>%
+  summarise(exp = Life.expectancy, deaths = Adult.Mortality, year = Year)
+AlcoholLife
+  
 ```
 
 This new wrangled data creates a table of the class failures as cases and mean alcohol consumption during weekday and during weekend, to see if there is a correlation.
 
 The second wrangled data creates a table of ages as cases and mean alcohol consumption during the weekday and during the weekend.
+
+The last wrangled data creates a table of alcohol consumption in developed countries (to exclude 3rd world countries that have low lie expectancy) with life expectancy and deaths among adults.
 
 ## Data Visualization
 
@@ -124,6 +134,7 @@ AlcoholFClasses %>%
   labs(y= "Total alcohol week", x = "Failed classes") + 
   ggtitle("Alcohol consumed during the week and failed classes")
 ```
+In this graph we see that the more alcohol is consumed, people fail more classes. This graph shows that alcohol affects the studies negatvely and make students fail classes, which is one of our research question, making this graph very useful for our research. Next time a new variable can be added to the graph to make it more informative (like relations with parents, sex and etc.) and to see if something else is consing fails aswell.
 
 #### Plot 2
 
@@ -136,7 +147,8 @@ AlcoholAge %>%
   labs(y= "Total alcohol week", x = "Age") + 
   ggtitle("Alcohol consumed during the week by age")
 ```
+In this graph we can see that people drink more when they get older, age 22 being the peak. It is a very usefull information, because it can give us further insights into the data and the knowtion that drinking increases by time among students. Next step is to add more variables to see what causes it or what it might be causing.
 
 ## Conclusion
 
-Include your initial intuition as to what the answer to your research question is using the data sets and visualizations you created. 
+My assuptions were that alcohol causes more classes failed, which came out to be true for now, because further we will see if something else is causeing it. Also, I assumed that after 21, people would be drinking more, which was true according to my graph. Next step is to find the causes of alcoholism among students, like problems in families, being far from home and etc. and also see if alcohol effect health and life expectancy using the second dataset.
