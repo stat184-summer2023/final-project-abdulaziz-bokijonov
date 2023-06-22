@@ -1,10 +1,10 @@
 ---
-title: "Initial EDA Basic Outline"
-author: "Abdulaziz Bokijonov"
+title: "Initial EDA"
+author: "Abdulaziz"
 output: html_notebook
 ---
-
-This is an outline for your Initial EDA. You can follow this outline, or you can modify it as you see fit. Do what works best for your project. 
+  
+  This is an outline for your final project. You can follow this outline, or you can modify it as you see fit. Do what works best for your project. 
 
 ## Research Question 
 
@@ -13,11 +13,12 @@ My research data is student alcohol consumption. This dataset has columns indica
 It is an interesting research, because as a college student I am eager to learn the insights of my own college life and what factors influence it and what are results I might expect from it.
 
 
+
 ## Data Processing 
 
 #### Data Intake 
 
-Include R code and written explanation to import your **TWO** data sets.
+Include R code and written explanation to import your data set.
 
 ```{r}
 library(tidyverse)
@@ -25,6 +26,38 @@ library(dcData)
 DataTable <- read.csv("student-alcohol-consumption.csv")
 head(DataTable)
 ```
+To use the data, I just downloaded the data csv file from Kaggle website and used read.csv function to import it into the r environment.
+
+The cases are student and here are the key variables:
+
+school: The school the student attends (categorical: "GP" - Gabriel Pereira, "MS" - Mousinho da Silveira)
+
+sex: The sex of the student (categorical: "F" - female, "M" - male)
+
+age: The age of the student (numeric: 15-22)
+
+famsize: Family size (categorical: "GT3" - greater than 3, "LE3" - less than or equal to 3)
+
+Pstatus: Parent's cohabitation status (categorical: "T" - living together, "A" - living apart)
+
+Medu: Mother's education level (numeric: 0-4, represents different levels of education)
+
+Fedu: Father's education level (numeric: 0-4, represents different levels of education)
+
+traveltime: Travel time from home to school (numeric: 1-4, represents different levels of time)
+
+failures: Number of past class failures (numeric: 0-4)
+
+Dalc: workday alcohol consumption (numeric: from 1 - very low to 5 - very high)
+
+Walc: weekend alcohol consumption (numeric: from 1 - very low to 5 - very high)
+
+health	current health status (numeric: from 1 - very bad to 5 - very good)
+
+absences	- number of school absences (numeric: from 0 to 93)
+
+Potential outliers of this data can be people who are acing both alcoholism and academics, because I suppose alcoholism would be negatively reflected on the academics.
+
 
 #### Data Wrangling 
 
@@ -60,32 +93,30 @@ This new wrangled data creates a table of the class failures as cases and mean a
 
 The second wrangled data creates a table of ages as cases and mean alcohol consumption during the weekday and during the weekend.
 
+
 ## Data Visualization
 
-#### Plot 1
-
-Include R code to make one data visualization (I would encourage you to use 3 or more variables). Include a brief written description of what your graph shows. Is this graph helpful in answering your research question? If it is helpful, will you need to add/modify anything in this graph in the final report? 
+Include R code and written explanation for your data visualization(s). You must have **at least** one. You may have more than one (I would encourage you to have more than one). 
 
 ```{r}
 AlcoholFClasses %>%
   ggplot(aes(x=failures,y=(meanAlcWeekday+meanAlcWeekend))) +
   geom_bar(stat='identity',position='stack', width=.9) +
-  labs(y= "Total alcohol week", x = "Failed classes") + 
-  ggtitle("Alcohol consumed during the week and failed classes")
-```
+  labs(y= "Total alcohol week", x = "Failed classes")
 
-#### Plot 2
-
-Include R code to make one data visualization (I would encourage you to use 3 or more variables). Include a brief written description of what your graph shows. Is this graph helpful in answering your research question? If it is helpful, will you need to add/modify anything in this graph in the final report? 
-
-```{r}
 AlcoholAge %>%
   ggplot(aes(x=age,y=(meanAlcWeekday+meanAlcWeekend))) +
   geom_bar(stat='identity',position='stack', width=.9) +
-  labs(y= "Total alcohol week", x = "Age") + 
-  ggtitle("Alcohol consumed during the week by age")
+  labs(y= "Total alcohol week", x = "Age")
+
+AlcoholSex %>%
+  ggplot(aes(x=sex,y=(meanAlcWeekday+meanAlcWeekend), fill=sex)) +
+  geom_bar(stat='identity',position='stack', width=.9) +
+  labs(y= "Total alcohol week", x = "Sex")
 ```
+```
+
 
 ## Conclusion
 
-Include your initial intuition as to what the answer to your research question is using the data sets and visualizations you created. 
+Answer your research question using the data sets and visualizations you created. 
