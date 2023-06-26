@@ -1,14 +1,18 @@
 ---
-title: "Final Project Basic Outline"
-author: "Names of all group members"
+title: "Final project"
+author: "Abdulaziz Bokijonov"
 output: html_notebook
 ---
 
-This is an outline for your final project. You can follow this outline, or you can modify it as you see fit. Do what works best for your project. 
-
 ## Research Question 
 
-State your general specific question and why it is interesting. 
+My research data is student alcohol consumption. This dataset has columns indicating school, sex, age, family size, parents cohabitation status, mothers and fathers education, travel time from home to school, and number of past classes failed and etc. for all cases, which are students.
+
+In addition to this data set, there is one more about life expectancy. Cases are countries from 2000 till 2015 followed by data about life expectancy, alcohol, deaths and etc.
+
+Using this data I want to find if there is any correlation between those variables and the alcohol consumption of students. Which factors influence the alcoholism among students the most, does alcohol influence the school work, do some combination of variables cause more alcoholism and does it change over time? Does alcohol effects mortality and exposure to Hepatitis B? Any other interesting trends and correlations will be addressed as well. 
+
+It is an interesting research, because as a college student I am eager to learn the insights of my own college life and what factors influence it and what are results I might expect from it. Also, from the second data set, I want to see how badly does alcohol affect life expectancy and overall health. 
 
 
 
@@ -16,18 +20,191 @@ State your general specific question and why it is interesting.
 
 #### Data Intake 
 
-Include R code and written explanation to import your **TWO** data sets.
+```{r}
+library(tidyverse)
+library(dcData)
+DataTable <- read.csv("student-alcohol-consumption.csv")
+DataTableLife <- read.csv("Life Expectancy Data.csv")
+head(DataTable)
+head(DataTableLife)
+```
+
+To use the data, I just downloaded the data csv files from Kaggle website and used read.csv function to import them into the r environment.
+
+In the first dataset, the cases are student and here are the key variables:
+
+school: The school the student attends (categorical: "GP" - Gabriel Pereira, "MS" - Mousinho da Silveira)
+
+sex: The sex of the student (categorical: "F" - female, "M" - male)
+
+age: The age of the student (quantitative: 15-22)
+
+famsize: Family size (categorical: "GT3" - greater than 3, "LE3" - less than or equal to 3)
+
+Pstatus: Parent's cohabitation status (categorical: "T" - living together, "A" - living apart)
+
+Medu: Mother's education level (quantitative: 0-4, represents different levels of education)
+
+Fedu: Father's education level (quantitative: 0-4, represents different levels of education)
+
+traveltime: Travel time from home to school (quantitative: 1-4, represents different levels of time)
+
+failures: Number of past class failures (quantitative: 0-4)
+
+Dalc: workday alcohol consumption (quantitative: from 1 - very low to 5 - very high)
+
+Walc: weekend alcohol consumption (quantitative: from 1 - very low to 5 - very high)
+
+health	current health status (quantitative: from 1 - very bad to 5 - very good)
+
+absences	- number of school absences (quantitative: from 0 to 93)
+
+G3 - final grade of the student (quantitative: from 0 to 20)
+
+Potential outliers of this data can be people who are acing both alcoholism and academics, because I suppose alcoholism would be negatively reflected on the academics
+
+In the second data set, cases are countries from 2000 till 2015 followed by these key variables: 
+
+country (categorical),
+
+year (quantitative),
+
+status (categorical),
+
+Life expectancy (quantitative),
+
+Alcohol, (quantitative) recorded per capita (15+) consumption (in litres of pure alcohol)
+
+Adult Mortality Rates of both sexes (quantitative) (probability of dying between 15 and 60 years per 1000 population)
+
+The ourliers for this data set can be countries that don't have high quality of life, thus more mortality rate not related to alcohol.
 
 #### Data Wrangling 
 
-Include R code and written explanation for wangling your data (you can make multiple wrangled data sets). 
+```{r}
+
+# Find the most popular value in the column
+MostPopularVal <- function(x) {
+  ux <- unique(x)
+  ux[which.max(tabulate(match(x, ux)))]
+}
+
+# Groups the data frame by totalAlc and find mean for numbers and most popular value for characters
+GroupEverything <- function(dataSet) {
+  ToReturn <- dataSet %>%
+    group_by(totalAlc) %>%
+    summarise(school = MostPopularVal(school))
+  for (i in 2:(ncol(dataSet)-1)){
+     varType <- class(dataSet[,i])
+     if(as.character(varType) == "character"){
+      tempData <- dataSet %>%
+        group_by(totalAlc) %>%
+        summarise(
+          MostPopularVal(eval(parse(text = paste(names(dataSet)[i]))))
+        )
+     }
+     else{
+      tempData <- dataSet %>%
+        group_by(totalAlc) %>%
+        summarise(
+          mean(eval(parse(text = paste(names(dataSet)[i]))))
+        ) 
+     }
+     
+     ToReturn <- merge(ToReturn, tempData)
+     names(ToReturn)[length(names(ToReturn))] <- names(dataSet)[i]
+     
+  }
+  return(ToReturn)
+}
+
+# Adds workday and weekend alcohol using mutate
+AlcoholTotal <-
+  DataTable %>%
+  mutate(totalAlc = Dalc+Walc) 
+
+# Gets all grouped table
+StudentsGrouped <-GroupEverything(AlcoholTotal)
+StudentsGrouped
+
+# Alcohol consumption and failed classes count
+AlcoholFClasses <-
+  DataTable %>%
+  group_by(failures) %>%
+  summarise(meanAlcWeekday = mean(Dalc),
+            meanAlcWeekend = mean(Walc))
+head(AlcoholFClasses)
+
+# Alcohol consumption and age
+AlcoholAge <-
+  DataTable %>%
+  group_by(age) %>%
+  summarise(meanAlcWeekday = mean(Dalc),
+            meanAlcWeekend = mean(Walc))
+head(AlcoholAge)
+
+# Alcohol consumption by sex
+AlcoholSex <-
+  DataTable %>%
+  group_by(sex) %>%
+  summarise(meanAlcWeekday = mean(Dalc),
+            meanAlcWeekend = mean(Walc))
+head(AlcoholSex)
+
+# Alcohol consumption and life expectancy with deaths
+AlcoholLife <- DataTableLife %>%
+  group_by(Alcohol) %>%
+  filter(Status == "Developed")
+head(AlcoholLife)
+  
+``` 
 
 
 
 
 ## Data Visualization
 
-Include R code and written explanation for your data visualization(s) with at least 3 variables. You must have **at least** one graph. You may have more than one (I would encourage you to have more than one). 
+```{r}
+AlcoholFClasses %>%
+  ggplot(aes(x=failures,y=(meanAlcWeekday+meanAlcWeekend))) +
+  geom_bar(stat='identity',position='stack', width=.9) +
+  labs(y= "Total alcohol week", x = "Failed classes") + 
+  ggtitle("Alcohol consumed during the week and failed classes")
+
+AlcoholLife %>%
+  ggplot(aes(x=Alcohol,y=Life.expectancy, color=Year)) +
+  geom_point() +
+  geom_smooth(method='lm', formula= y~x) +
+  labs(y= "Life expectancy", x = "Alcohol") + 
+  ggtitle("Alcohol consumed and life expectancy")
+
+AlcoholLife %>%
+  ggplot(aes(x=Alcohol,y=BMI, color=Year)) +
+  geom_point() +
+  geom_smooth(method='lm', formula= y~x) +
+  labs(y= "BMI", x = "Life expectancy") + 
+  ggtitle("Alcohol consumed and BMI")
+
+StudentsGrouped %>%
+  ggplot(aes(x=totalAlc,y=freetime, color=sex)) +
+  geom_point() +
+  geom_smooth(method='lm', formula= y~x) +
+  labs(y= "Free time", x = "Total Alcohol") + 
+  ggtitle("Alcohol consumed and Family relation")
+```
+In this graph we see that the more alcohol is consumed, people fail more classes. This graph shows that alcohol affects the studies negatvely and make students fail classes, which is one of our research question, making this graph very useful for our research. Next time a new variable can be added to the graph to make it more informative (like relations with parents, sex and etc.) and to see if something else is consing fails aswell.
+
+#### Plot 2
+
+Include R code to make one data visualization (I would encourage you to use 3 or more variables). Include a brief written description of what your graph shows. Is this graph helpful in answering your research question? If it is helpful, will you need to add/modify anything in this graph in the final report? 
+
+```{r}
+AlcoholAge %>%
+  ggplot(aes(x=age,y=(meanAlcWeekday+meanAlcWeekend))) +
+  geom_bar(stat='identity',position='stack', width=.9) +
+  labs(y= "Total alcohol week", x = "Age") + 
+  ggtitle("Alcohol consumed during the week by age")
+``` 
 
 
 
