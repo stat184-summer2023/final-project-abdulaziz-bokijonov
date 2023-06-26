@@ -124,9 +124,8 @@ AlcoholTotal <-
   mutate(totalAlc = Dalc+Walc) 
 
 # Gets all grouped table
-StudentsGrouped <-GroupEverything(AlcoholTotal)
-StudentsGrouped
-
+StudentsGroupedTotalAlc <-GroupEverything(AlcoholTotal)
+StudentsGroupedTotalAlc
 # Alcohol consumption and failed classes count
 AlcoholFClasses <-
   DataTable %>%
@@ -142,14 +141,6 @@ AlcoholAge <-
   summarise(meanAlcWeekday = mean(Dalc),
             meanAlcWeekend = mean(Walc))
 head(AlcoholAge)
-
-# Alcohol consumption by sex
-AlcoholSex <-
-  DataTable %>%
-  group_by(sex) %>%
-  summarise(meanAlcWeekday = mean(Dalc),
-            meanAlcWeekend = mean(Walc))
-head(AlcoholSex)
 
 # Alcohol consumption and life expectancy with deaths
 AlcoholLife <- DataTableLife %>%
@@ -171,6 +162,27 @@ AlcoholFClasses %>%
   labs(y= "Total alcohol week", x = "Failed classes") + 
   ggtitle("Alcohol consumed during the week and failed classes")
 
+StudentsGroupedTotalAlc %>%
+  ggplot(aes(x=totalAlc,y=freetime, color=sex)) +
+  geom_point() +
+  geom_smooth(method='lm', se = FALSE) +
+  labs(y= "Free time", x = "Total Alcohol") + 
+  ggtitle("Alcohol consumed and Free time")
+
+StudentsGroupedTotalAlc %>%
+  ggplot(aes(x=totalAlc,y=G3, color=sex)) +
+  geom_point() +
+  geom_smooth(method='lm', se = FALSE) +
+  labs(y= "Final grade", x = "Total Alcohol") + 
+  ggtitle("Alcohol consumed and Final grades")
+```
+* In the first graph we see that the there is positive correlation between alcohol consumed and failed classes. This graph shows that more alcohol consumed, more classes failed. 
+
+* In the second graph, we can see the relation of free time and alcohol consumed. Both for females and males, more free time correlates with more alcohol consumed. This can be both cause and effect of alacohol consumption.
+
+* In the third graph we can see the final grades relation to the total alcohol consumed. For females alcohol consumption negatively relates to grades, meaning that the more alcohol consumed, the lower the final grades. For males its the opposite, alcohol consumtion have positive relation with their final grades.
+
+```{r}
 AlcoholLife %>%
   ggplot(aes(x=Alcohol,y=Life.expectancy, color=Year)) +
   geom_point() +
@@ -184,19 +196,11 @@ AlcoholLife %>%
   geom_smooth(method='lm', formula= y~x) +
   labs(y= "BMI", x = "Life expectancy") + 
   ggtitle("Alcohol consumed and BMI")
-
-StudentsGrouped %>%
-  ggplot(aes(x=totalAlc,y=freetime, color=sex)) +
-  geom_point() +
-  geom_smooth(method='lm', formula= y~x) +
-  labs(y= "Free time", x = "Total Alcohol") + 
-  ggtitle("Alcohol consumed and Family relation")
 ```
-In this graph we see that the more alcohol is consumed, people fail more classes. This graph shows that alcohol affects the studies negatvely and make students fail classes, which is one of our research question, making this graph very useful for our research. Next time a new variable can be added to the graph to make it more informative (like relations with parents, sex and etc.) and to see if something else is consing fails aswell.
 
-#### Plot 2
+* In the first graph, based on the best fit line, there is a negative relation between alcohol consumed and life expectancy. More alcohol consumed, lower the life expectancy.
 
-Include R code to make one data visualization (I would encourage you to use 3 or more variables). Include a brief written description of what your graph shows. Is this graph helpful in answering your research question? If it is helpful, will you need to add/modify anything in this graph in the final report? 
+* In the second graph, BMI (body mass index) positively relates to alcohol consumed. Its higher when more alcohol is consumed. P.S., high can cause health problems and decrease life expectancy.
 
 ```{r}
 AlcoholAge %>%
@@ -204,6 +208,20 @@ AlcoholAge %>%
   geom_bar(stat='identity',position='stack', width=.9) +
   labs(y= "Total alcohol week", x = "Age") + 
   ggtitle("Alcohol consumed during the week by age")
+
+StudentsGroupedTotalAlc %>%
+  ggplot(aes(y=totalAlc,x=traveltime, color=sex)) +
+  geom_point() +
+  geom_smooth(method='lm', se = FALSE) +
+  labs(x= "Travel time from home", y = "Total Alcohol") + 
+  ggtitle("Alcohol consumed and Travel time from home")
+
+StudentsGroupedTotalAlc %>%
+  ggplot(aes(y=totalAlc,x=health, color=sex)) +
+  geom_point() +
+  geom_smooth(method='lm', se = FALSE) +
+  labs(x= "Health", y = "Total Alcohol") + 
+  ggtitle("Alcohol consumed and Final grades")
 ``` 
 
 
